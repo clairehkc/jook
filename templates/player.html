@@ -1,0 +1,96 @@
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ styles }}">
+	<script type="text/javascript" src="{{ jquery }}"></script>	
+</head>
+
+<audio controls id="player" onended="$('#next').trigger('click')">
+  <source id="mp3" src="" type="audio/mpeg">
+
+</audio>
+
+<span id="prev">
+	Prev
+</span>
+
+<span id="next">
+	Next
+</span>
+
+<ul id="trackList">
+	Tracks
+</ul>
+
+<script>
+
+$(document).ready(function(){
+	var songList = [],
+	 	song,
+	 	curr = 0,
+	 	songId = 1,
+	 	formatted,
+	 	audio = $("#player"),
+	 	mp3 = $("#mp3");
+
+	function format (s) {
+		var end,
+			title = s;
+
+		title = title.replace(/%[0-9][0-9]/g," ").replace(/_/g," ");	
+		end = title.indexOf("mp3");
+		title = title.substring(52,end-1);
+
+		return title;
+	}
+
+	{% for s in songs %}
+		song = "{{ s }}";
+		songList.push(song);
+		console.log(song)
+		formatted = format (song)
+		$("#trackList").append("<li id=" + songId + ">" + formatted + "</li>");
+		songId++;
+	{% endfor %}
+	
+
+	function changeTrack () {
+	    mp3.attr("src", songList[curr]);
+	    audio[0].pause();
+		audio[0].load();
+		audio[0].play();
+	}
+	
+	changeTrack();
+
+	$("#prev").click(function () {
+		if (curr == 0) {
+			curr = songList.length-1;
+		}
+		else {
+			curr--;
+		}
+		changeTrack();
+	});	
+
+	$("#next").click(function () {
+		if (curr == songList.length-1) {
+			curr = 0;
+		}
+		else {
+			curr++;
+		}
+		changeTrack();
+	});	
+
+	$("#trackList li").click(function (){
+		var id = $(this).attr('id') - 1;
+		
+		curr = id;
+		changeTrack();
+	});
+});
+
+</script>
+
+</html>

@@ -1,0 +1,44 @@
+from flask import Flask, render_template, url_for 
+app = Flask(__name__)
+
+import dropbox
+app_key = 'cl4r9w05dblwqhx'
+app_secret = '53br9rm0jljhire'
+
+flow = dropbox.client.DropboxOAuth2FlowNoRedirect(app_key, app_secret)
+
+userInfo = ''
+client = ''
+
+class Jook:
+
+    @app.route('/')
+    def index():
+        return 'Hello World!'
+
+    @app.route('/test/<n>')
+    def test(n):
+        s = url_for('static', filename='styles.css')
+        return render_template('index.html', name=n, styles=s)
+
+    @app.route('/auth/')
+    def auth():
+        authorize_url = flow.start()
+        code = raw_input("Enter the authorization code here: ").strip()
+        access_token, user_id = flow.finish(code)
+        global client
+        client = dropbox.client.DropboxClient(access_token)
+        print 'linked account: ', client.account_info()
+        global userInfo 
+        userInfo = client.account_info()
+        return 'Thanks!'
+
+    @app.route('/songs/')
+    def songs():
+        folder_metadata = client.metadata('/music/')
+        print "metadata:", folder_metadata
+        return render_template('songs.html', songs=folder_metadata)
+
+if __name__ == '__main__':
+    app.run(debug = True)
+

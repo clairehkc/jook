@@ -1,4 +1,4 @@
-#!C:\Users\Claire\Documents\dev\jukebox\venv\Scripts\python.exe
+#!c:\Users\Claire\Documents\dev\jukebox\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'setuptools==0.9.8','console_scripts','easy_install'
 __requires__ = 'setuptools==0.9.8'
 import sys

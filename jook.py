@@ -20,7 +20,6 @@ def main():
 def getLinks(m):
     songList = []
     contents = m["contents"]
-    print contents
 
     for entry in contents:
         song = entry["path"]
@@ -47,7 +46,7 @@ def auth(key):
     access_token, user_id = flow.finish(key)
     global client
     client = dropbox.client.DropboxClient(access_token)
-    print 'linked account: ', client.account_info()
+    #print 'linked account: ', client.account_info()
     global userInfo 
     userInfo = client.account_info()
     return redirect(url_for('.player'))

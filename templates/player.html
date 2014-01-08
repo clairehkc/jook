@@ -6,7 +6,7 @@
 </head>
 
 <audio controls id="player" onended="$('#next').trigger('click')">
-  <source id="mp3" src="" type="audio/mpeg">
+  <source id="file" src="https://dl.dropboxusercontent.com/s/l2oi4xjmk18h46w/taylor%20swift%20-%20you%27re%20not%20sorry.m4a" type="audio/mpeg">
 </audio>
 
 <span id="prev">
@@ -25,46 +25,75 @@
 
 $(document).ready(function(){
 	var songList = [],
+		titleList = [],
+		songFor = new Object(),
 	 	song,
+	 	len = 0,
 	 	curr = 0,
-	 	songId = 1,
 	 	formatted,
 	 	audio = $("#player"),
-	 	mp3 = $("#mp3");
+	 	file = $("#file");
 
-	function format (s) {
+	function format(s) {
 		var end,
-			title = s;
+			title = s,
+			formats = ['.mp3', '.m4a', '.wav', '.ogg'];
 
-		title = title.replace(/%[0-9][0-9]/g," ").replace(/_/g," ");	
-		end = title.indexOf("mp3");
-		title = title.substring(52,end-1);
-
+		title = title.replace(/%27/g,"'").replace(/%[0-9][0-9]/g," ").replace(/_/g," ");	
+		for (i = 0; i < formats.length; i++) {
+			end = title.indexOf(formats[i]);
+			if (end != -1) {
+				break;
+			}
+		}
+		title = title.substring(52,end);
 		return title;
 	}
 
 	{% for s in songs %}
 		song = "{{ s }}";
+		formatted = format(song);
 		songList.push(song);
-		console.log(song)
-		formatted = format (song)
-		$("#trackList").append("<li id=" + songId + ">" + formatted + "</li>");
-		songId++;
+		titleList.push(formatted);
+		songFor[formatted] = song;
+		len++;
 	{% endfor %}
-	
+	console.log(songFor)
+	function isEmpty() {
+		if (len == 0) {
+			$("#trackList").append("<br>Looks like you haven't added any songs yet. There should be a new folder called 'jook' in your dropbox. Drag some songs into it, then refresh the page!")
+		} 
+	}
 
-	function changeTrack () {
-	    mp3.attr("src", songList[curr]);
+	function getSorted() {
+		var lowered = titleList.slice(),
+			upperOf = new Object(),
+			title;
+
+		for (i = 0; i < len; i++) {
+			lowered[i] = lowered[i].toLowerCase();
+			upperOf[lowered[i]] = titleList[i];
+		}		
+		console.log(upperOf)
+		lowered = lowered.sort();
+		
+		for (i = 0; i < len; i++) {
+			title = upperOf[lowered[i]];
+			$("#trackList").append("<li id=" + (i+1) + ">" + title + "</li>");
+			songList[i] = songFor[title];
+		}
+	}
+
+	function changeTrack() {
+	    file.attr("src", songList[curr]);
 	    audio[0].pause();
 		audio[0].load();
 		audio[0].play();
 	}
 	
-	changeTrack();
-
-	$("#prev").click(function () {
+	$("#prev").click(function() {
 		if (curr == 0) {
-			curr = songList.length-1;
+			curr = len-1;
 		}
 		else {
 			curr--;
@@ -72,8 +101,8 @@ $(document).ready(function(){
 		changeTrack();
 	});	
 
-	$("#next").click(function () {
-		if (curr == songList.length-1) {
+	$("#next").click(function() {
+		if (curr == len-1) {
 			curr = 0;
 		}
 		else {
@@ -82,12 +111,18 @@ $(document).ready(function(){
 		changeTrack();
 	});	
 
-	$("#trackList li").click(function (){
+	$(document).on('click', "#trackList li", function() {
 		var id = $(this).attr('id') - 1;
 		
 		curr = id;
 		changeTrack();
+		console.log(curr)
 	});
+
+	isEmpty();
+	getSorted();
+	changeTrack();
+
 });
 
 </script>

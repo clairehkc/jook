@@ -2,28 +2,11 @@
 <!doctype html>
 <head>
 	<link rel="stylesheet" type="text/css" href="{{ styles }}">
-
-	<script>
-		function pop (url, title, w, h) {
-		  var left = (screen.width/2)-(w/2);
-		  var top = (screen.height/2)-(h/2);
-		  return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, width='+w+', height='+h+', top='+top+', left='+left);
-		} 
-		
-	</script>
-
 </head>
 
 <body>
 	<div>
-		Click <a onclick="pop('{{ auth }}','popup',850,550);" href=""> here</a> to give Jook permission to access your dropbox.
-		<br>
-		Then Copy and Paste the verification code here: 
-		<form action="/" method="post">
-	    	<input type="text" name="key" value="">
-	    	<input type="submit" value="Submit">
-		</form>
-	That's it!
+		Click <a href="{{ auth }}"> here</a> to give Jook permission to access your dropbox.
 	</div>
 </body>
 

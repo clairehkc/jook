@@ -58,7 +58,7 @@ $(document).ready(function(){
 		songFor[formatted] = song;
 		len++;
 	{% endfor %}
-	console.log(songFor)
+
 	function isEmpty() {
 		if (len == 0) {
 			$("#trackList").append("<br>Looks like you haven't added any songs yet. There should be a new folder called 'jook' in your dropbox. Drag some songs into it, then refresh the page!")
@@ -74,7 +74,7 @@ $(document).ready(function(){
 			lowered[i] = lowered[i].toLowerCase();
 			upperOf[lowered[i]] = titleList[i];
 		}		
-		console.log(upperOf)
+
 		lowered = lowered.sort();
 		
 		for (i = 0; i < len; i++) {
@@ -116,7 +116,6 @@ $(document).ready(function(){
 		
 		curr = id;
 		changeTrack();
-		console.log(curr)
 	});
 
 	isEmpty();
